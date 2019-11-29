@@ -127,16 +127,16 @@ Matrix.prototype.multiply = function(other) {
  * @returns {Matrix} The matrix after the operation.
  */
 Matrix.prototype.lookAt = function(from, to, up) {
-    this._02 = to.x - from.x;
-    this._12 = to.y - from.y;
-    this._22 = to.z - from.z;
+    this._02 = from.x - to.x;
+    this._12 = from.y - to.y;
+    this._22 = from.z - to.z;
 
     const zli = 1 / Math.sqrt(this._02 * this._02 + this._12 * this._12 + this._22 * this._22);
 
     this._02 *= zli;
     this._12 *= zli;
     this._22 *= zli;
-    this._32 = this._02 * from.x + this._12 * from.y + this._22 * from.z;
+    this._32 = -this._02 * from.x - this._12 * from.y - this._22 * from.z;
 
     this._00 = this._12 * up.z - up.y * this._22;
     this._10 = this._22 * up.x - up.z * this._02;
@@ -147,12 +147,12 @@ Matrix.prototype.lookAt = function(from, to, up) {
     this._00 *= xli;
     this._10 *= xli;
     this._20 *= xli;
-    this._30 = this._00 * from.x + this._10 * from.y + this._20 * from.z;
+    this._30 = -this._00 * from.x - this._10 * from.y - this._20 * from.z;
 
     this._01 = this._10 * this._22 - this._12 * this._20;
     this._11 = this._20 * this._02 - this._22 * this._00;
     this._21 = this._00 * this._12 - this._02 * this._10;
-    this._31 = this._01 * from.x + this._11 * from.y + this._21 * from.z;
+    this._31 = -this._01 * from.x - this._11 * from.y - this._21 * from.z;
 
     this._03 = 0;
     this._13 = 0;
@@ -163,8 +163,8 @@ Matrix.prototype.lookAt = function(from, to, up) {
 };
 
 /**
- * Set this matrix to
- * @param {Number} angle The field of view in radians.
+ * Set this matrix to a perspective projection.
+ * @param {Number} angle The vertical camera angle in radians.
  * @param {Number} aspect The aspect ratio of the viewport.
  * @param {Number} zNear The near clipping plane.
  * @param {Number} zFar The far clipping plane.
